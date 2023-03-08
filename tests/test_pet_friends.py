@@ -134,6 +134,20 @@ def test_add_new_pet_simple_with_name_consisting_of_symbols(name='@#$%^&*()-±?`
         print('\nСистема не допускает добавление питомца с именем, состоящим из символов.')
 
 
+def test_add_new_pet_simple_with_very_long_name(animal_type='dog', age='1'):
+    name = 'CpeZ5e69i1u20zqzveOx32Snjr0OFliAvzOhtdIJRQqJ8zQkK2Vwjl8CaZ2A6UyJp1Lv9zP0pw6nRQ9a0tov0nOfN3pf1fGH2uRs'
+    _, auth_key = pf.get_api_key(valid_email, valid_password)
+    status, result = pf.add_new_pet_simple(auth_key, name, animal_type, age)
+    _, my_list = pf.get_list_of_pets(auth_key, filter='my_pets')
+    if status == 200:
+        assert result['name'] == name
+        assert my_list['pets'][0]['name'] == name
+        print(f'\nСистема допускает добавление имени питомца, состоящего из {len(name)} символов!\n{result}')
+    else:
+        assert name not in result['name']
+        assert name not in my_list['pets'][0]['name']
+        print(f'\nСистема не допускает добавление питомца с очень длинным именем ({len(name)} символов).\n{result}')
+
 
 def test_add_new_pet_simple_with_non_standard_animal_type(name='Lucky',
                                                             animal_type="rabbit's foot", age='1'):
